@@ -82,8 +82,16 @@ def incrColorful(image, factor):
     bound = lambda x: max(min(x,1.0), 0.0)
     return np.vectorize(bound)(image)
 
-def ims():
-    filenames = ['data/cur/1.jpg', 'data/cur/0.jpg']
+def imageToListTuples(image):
+    n,m,i = image.shape
+    out = []
+    for (i,j), value in np.ndenumerate(image[:,:,0]):
+        out.append(tuple(image[i,j,:]))
+
+def ims(f1, f2):
+    #filenames = ['data/cur/0.jpg', 'data/cur/1.jpg']
+    #filenames = ['data/cur/2.jpg', 'data/cur/3.jpg']
+    filenames = [f1, f2]
     filename_queue = tf.train.string_input_producer(filenames, shuffle=False)
 
     reader = tf.WholeFileReader()
@@ -107,22 +115,4 @@ def ims():
     #plt.show()
 
     return imageToFloat(alice), imageToFloat(reality)
-
-alice, reality = ims()
-n = 5
-a = imageFromPixel([1,0,0],n,n)
-b = imageFromPixel([1,1,0],n,n)
-a[1,:,:]   = [0,0,0]
-a[2:3,:,:] = [0,1,0]
-b[0,:,:] = [1,1,1]
-b[4:5,:,:] = [1,0,1]
-a = reality
-b = alice
-imshow0(a)
-imshow0(b)
-
-#c = np.copy(b)
-
-c0 = colorPdfTransform(a,b)
-imshow(c0)
 
