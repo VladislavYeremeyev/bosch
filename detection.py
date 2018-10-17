@@ -25,6 +25,40 @@ class Structure:
         self.structType = structType
 
 
+def detectStructures(imagePath):
+    """
+        Get all structures from an image
+
+        Parameters:
+        --------------------
+        imagePath : type?
+            Path to the folder with images
+
+        Return:
+        --------------------
+        structures : collection of structures
+            Set of structure from the images
+    """
+
+    return None
+
+def detectRealityStructures(folderPath):
+    """
+        Get all structures from all the images from the given folder
+
+        Parameters:
+        --------------------
+        folderPath : type?
+            Path to the folder with images
+
+        Return:
+        --------------------
+        structures : collection of structures
+            Set of structure from the images
+    """
+
+    return None
+
 def isEqual(eqFun, a, b):
     """
         Check equals of structure depend on given equality relation  
@@ -46,19 +80,3 @@ def isEqual(eqFun, a, b):
 
     return eqFun(a.structType, b.structType)
 
-def detectStructures(folderPath):
-    """
-        Get all structures from all the images from the given folder
-
-        Parameters:
-        --------------------
-        folderPath : type?
-            Path to the folder with images
-
-        Return:
-        --------------------
-        structures : collection of structures
-            Set of structure from the images
-    """
-
-    return None
