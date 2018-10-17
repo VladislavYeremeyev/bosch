@@ -4,6 +4,22 @@
 
 from eqs import idEq, trueEq
 
+class StructType:
+    def __init__(self, sType, sCategory):
+        """
+            Define struct  type
+
+
+            Parameters:
+            -----------------
+            sType : type?
+                Type of structure
+            sCategory : type?
+                Category of structure
+        """
+        self.sType = sType
+        self.sCategory = sCategory
+
 class Structure:
 
     def __init__(self, obj, coord, structType):
@@ -16,7 +32,7 @@ class Structure:
                 Visual representation of structure
             coord : type?
                 Structure coordinate on the image
-            structType : type?
+            structType : StructType
                 Type of structure
         """
 
