@@ -1,17 +1,20 @@
-from pdfTransformStyle import *
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
-f1, f2 = ('data/cur/2.jpg', 'data/cur/3.jpg')
-alice, reality = ims(f1,f2)
-a = reality
-b = alice
-b = b[:770,800:,:]
-imshow0(a)
-imshow0(b)
+import numpy as np
+import numpy.linalg as nl
+from scipy import misc
+from PIL import Image
 
-c = np.copy(b)
+import matplotlib.pyplot as plt
 
-#c0 = colorPdfTransform(a,b)
-c0 = colorPdfTransform(incrColorful(a, 10),incrColorful(b,10))
-#c0 = colorPdfTransform(b,a)
-imshow(c0)
+from detection import detectStructures
+
+bp = "/home/kerofeev/work/tests/Python/bosch/data/cur/"
+i = Image.open("/home/kerofeev/neural-style/examples/inputs/starry_night.jpg")
+i = Image.open("/home/kerofeev/neural-style/out.png")
+
+d = detectStructures(bf+"ZB0.jpg")
+
 

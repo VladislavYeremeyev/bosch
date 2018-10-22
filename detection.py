@@ -199,7 +199,7 @@ def visualize_detected_objects(imagePath):
     
     
 def create_objects_dictionary(output_dict, type_dictionary):
-     """
+    """
         Creates dictionary with detected objects properties
 
         Parameters:
@@ -232,7 +232,7 @@ def create_objects_dictionary(output_dict, type_dictionary):
             }
         }
     
-  return result_dictionary
+    return result_dictionary
 
 
 def insert_images(image_size, detected_objects_dictionary):
