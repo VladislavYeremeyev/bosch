@@ -198,7 +198,7 @@ def visualize_detected_objects(imagePath):
     plt.imshow(img)
     
     
-def create_objects_dictionary(output_dict, type_dictionary):
+def create_objects_dictionary(img_path, output_dict, type_dictionary):
     """
         Creates dictionary with detected objects properties
 
@@ -208,7 +208,9 @@ def create_objects_dictionary(output_dict, type_dictionary):
             result of detectStructures function invoke
         type_dictionary : dictionary
             dictionary with types of objects in model (e. g. {{'id': 1, 'name': 'person'}, ...})
-
+        img_path : string
+            string with image path
+        
         Return:
         --------------------
         result_dictionary : dictionary with detected objects properties
@@ -229,46 +231,56 @@ def create_objects_dictionary(output_dict, type_dictionary):
             'size': {
                 'width': output_dict['detection_boxes'][i][3] - output_dict['detection_boxes'][i][1],
                 'height': output_dict['detection_boxes'][i][2] - output_dict['detection_boxes'][i][0]
-            }
+            },
+            'img_path': img_path
         }
     
     return result_dictionary
 
 
-def insert_images(image_size, detected_objects_dictionary):
+def insert_images(image_size, detected_objects_dictionary, background_image_path="none"):
     '''
         imports
         from PIL import Image
         from matplotlib import pyplot as plt
     '''
+    
     img_w, img_h = image_size
-    background = Image.new('RGBA', (img_w, img_h), (255, 255, 255, 255))  #white background
+
+    if background_image_path == "none":
+        background = Image.new('RGBA', (img_w, img_h), (255, 255, 255, 255))
+    else:
+        background = Image.open(background_image_path)
+        background.thumbnail(image_size, Image.ANTIALIAS)
+      
     for key, value in detected_objects_dictionary.items():
         offset = (round(value['pos']['left'] * img_w), round(value['pos']['top'] * img_h))
-        
-        # choose_image function return path of equivalent in new reality object's image
+    
         img_to_insert_path = choose_image(value['type'])
         inserted_img = Image.open(img_to_insert_path, 'r')
-        available_width = round(value['size']['x'] * img_w)  # width of available space in bounding box in pixels
-        available_height = round(value['size']['y'] * img_h)    # height of available space in bounding box in pixels
-        
-        #ratio for changing inserted image size to insert it in bounding box area
+        available_width = round(value['size']['x'] * img_w)
+        available_height = round(value['size']['y'] * img_h)
         ratio = (available_width / float(inserted_img.size[0]))
         proportional_height = int((float(inserted_img.size[1]) * float(ratio)))
-        inserted_img = inserted_img.resize((available_width, available_height), Image.ANTIALIAS)  #img resizing
-
-        background.paste(inserted_img, offset)  #insert img into bounding box place
+        inserted_img = inserted_img.resize((available_width, available_height), Image.ANTIALIAS)
+    
+        background.paste(inserted_img, offset)
     background.save('out.jpg')
     return background
 
 
-def detectRealityStructures(folderPath):
+def detectRealityStructures(folder_path):
     """
+        Imports: 
+            os, 
+            from pathlib import Pathб
+            from PIL import Image
+            
         Get all structures from all the images from the given folder
 
         Parameters:
         --------------------
-        folderPath : type?
+        folder_path : string
             Path to the folder with images
 
         Return:
@@ -276,6 +288,37 @@ def detectRealityStructures(folderPath):
         structures : collection of structures
             Set of structure from the images
     """
+    
+    directory = os.fsencode(folder_path)
+    img_counter = 0
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        # img formats
+        if filename.endswith(".jpg") or filename.endswith(".jpeg"):
+            # script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+            # rel_path = "2091/data.txt"
+            # abs_file_path = os.path.join(script_dir, rel_path)
+            
+            #change if needed
+            img_counter++
+            img_path = "./" + folder_path + "/" + filename
+            output_dict = detectStructures(img_path)
+            
+            #category_index - dictionary with types of model
+            detected_objects_dictionary = create_objects_dictionary(img_path, output_dict, category_index)
+            img_to_crop = Image.open(img_path, 'r')
+            im_w, im_h = img_to_crop.size
+            for key, value in detected_objects_dictionary.items():
+                offset_x = round(value['pos']['left'] * img_w)
+                offset_y = round(value['pos']['top'] * img_h)
+                available_width = round(value['size']['x'] * img_w)
+                available_height = round(value['size']['y'] * img_h)
+                img = Image.open("ImageName.jpg")
+                area = (offset_x, offset_y, offset_x + available_width, offset_y + available_height)
+                cropped_img = img.crop(area)
+                cropped_img.save(img_counter + '-' + key + '.jpg')
+        else:
+            continue
 
     return None
 
